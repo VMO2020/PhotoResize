@@ -67,7 +67,7 @@ export const Resize = () => {
 				let ctx = canvas.getContext('2d');
 				ctx.drawImage(img, 0, 0, width, height);
 				//get the base64-encoded Data URI from the resize image
-				resolve(ctx.canvas.toDataURL('image/jpeg', 0.8));
+				resolve(ctx.canvas.toDataURL('image/jpeg', 0.9));
 			};
 		});
 		return resized_base64;
@@ -128,7 +128,7 @@ export const Resize = () => {
 	return (
 		<div className='container'>
 			<div>
-				<label>SELECT max size: </label>
+				<label>SELECT max side: </label>
 				<select onChange={handleMaxValue}>
 					<option value='1920'>1920px</option>
 					<option value='1440'>1440px</option>
@@ -161,6 +161,7 @@ export const Resize = () => {
 					Resized: {widthValue}px x {heightValue}px _
 					<b>{imageSize.toFixed(0)}</b>KB
 				</p>
+				<br />
 				{imageName && (
 					<a
 						href={document.getElementById('new').src}
@@ -172,6 +173,7 @@ export const Resize = () => {
 					</a>
 				)}
 			</div>
+			<br />
 		</div>
 	);
 };
