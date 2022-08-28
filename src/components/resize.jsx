@@ -1,8 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+// Library
+import exifr from 'exifr'; // => exifr/dist/full.umd.cjs
 
 export const Resize = () => {
+	// EXIF
+	const [previewIMG, setPreviewIMG] = useState();
+	const [dataValue, setDataValue] = useState('');
+	const [created, setCreated] = useState(null); // Created Date
+	// IMAGE
 	const [image, setImage] = useState(null);
-	const [imageName, setImageName] = useState(null);
+	const [imageName, setImageName] = useState(null); // Image name
 	const [maxValue, setMaxValue] = useState(1920); // max width or height px
 	const [widthValue, setWidthValue] = useState(1024);
 	const [heightValue, setHeightValue] = useState(768);
@@ -21,7 +29,7 @@ export const Resize = () => {
 		}
 	};
 
-	const handleImageResize = () => {
+	const handleImageResize = (e) => {
 		// Get image from input
 		const file = document.getElementById('file');
 		setImage(file);
@@ -94,10 +102,14 @@ export const Resize = () => {
 	};
 
 	const preview_image = async (file, limit) => {
+		const reset = '';
+		setPreviewIMG(reset);
+
 		// Image to base64
 		const res = await image_to_base64(file.files[0]);
 
 		if (res) {
+			setPreviewIMG(res);
 			// Original image
 			const olds = calc_image_size(res);
 			setOldImageSize(olds);
@@ -111,6 +123,11 @@ export const Resize = () => {
 
 			document.getElementById('new').src = resized;
 			document.querySelector('#hidden').classList.remove('hidden');
+
+			// Change Date Format
+			var date = new Date(dataValue.CreateDate).toDateString();
+			setCreated(date);
+			// console.log(date);
 		} else {
 			console.log('image return err');
 		}
@@ -125,22 +142,15 @@ export const Resize = () => {
 		return Math.round(x_size / 1024);
 	};
 
+	useEffect(() => {
+		previewIMG &&
+			exifr
+				.parse(`${previewIMG}`, { userComment: true, xmp: true })
+				.then((output) => setDataValue(output));
+	}, [previewIMG]);
+
 	return (
 		<div className='container'>
-			<div>
-				<label>SELECT max side: </label>
-				<select onChange={handleMaxValue}>
-					<option value='1920'>1920px</option>
-					<option value='1440'>1440px</option>
-					<option value='1280'>1280px</option>
-					<option value='1080'>1080px</option>
-					<option value='810'>810px</option>
-					<option value='720'>720px</option>
-					<option value='600'>600px</option>
-					<option value='400'>400px</option>
-				</select>
-			</div>
-			<br />
 			<input
 				id='file'
 				accept='.jpg, .png, .jpeg'
@@ -151,7 +161,47 @@ export const Resize = () => {
 			<br />
 			<div className='hidden' id='hidden'>
 				<img src='' id='new' alt='rezised' />
+				<div className='custome-select'>
+					<br />
+					<label className='select'>SELECT max side: </label>
+					<select onChange={handleMaxValue}>
+						<option value='1920'>1920px</option>
+						<option value='1530'>1530px</option>
+						<option value='1440'>1440px</option>
+						<option value='1280'>1280px</option>
+						<option value='1080'>1080px</option>
+						<option value='900'>900px</option>
+						<option value='720'>720px</option>
+						<option value='630'>630px</option>
+						<option value='400'>400px</option>
+					</select>
+				</div>
+				<br />
 				<p>{imageName}</p>
+				<div className='data-container'>
+					<pre className='exif-data'>
+						{dataValue && (
+							<>
+								<p>Camera Model: {dataValue.Model}</p>
+
+								{dataValue.Lens && <p>Lens: {dataValue.Lens}</p>}
+
+								<p>
+									ISO:{dataValue.ISO} f:{dataValue.FNumber} S:1/
+									{Math.trunc(1 / dataValue.ExposureTime)} Focal:
+									{dataValue.FocalLength}mm{' '}
+								</p>
+								{dataValue.subject && <p>Subject: {dataValue.subject}</p>}
+
+								{dataValue.Copyright && <p>Copyright: {dataValue.Copyright}</p>}
+
+								<p>Created: {created}</p>
+
+								{/* <p>{JSON.stringify(dataValue, null, '\t')}</p> */}
+							</>
+						)}
+					</pre>
+				</div>
 
 				<p>
 					Original: {oldWidthValue.toFixed(0)}px x {oldheightValue.toFixed(0)}px
