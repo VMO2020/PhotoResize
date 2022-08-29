@@ -4,15 +4,19 @@ import { Resize } from './components/resize';
 function App() {
 	return (
 		<div className='App'>
-			<h2>PHOTO RESIZE</h2>
-			<h1>
-				Select a JPG, PNG or JPEG photo and resize it by defining new height and
-				width pixels. Change image dimensions for use in web applications in
-				JPEG format.
-			</h1>
-			<div className='photo-container'>
+			<header>
+				<h2>PHOTO RESIZE</h2>
+				<h1>
+					Select a JPG, PNG or JPEG photo and resize it by defining new height
+					and width pixels. Change image dimensions for use in web applications
+					in JPEG format.
+				</h1>
+			</header>
+
+			<main className='photo-container'>
 				<Resize />
-			</div>
+			</main>
+
 			<footer>
 				<p>
 					<a href='https://vmog.net/' target='_blank' rel='noreferrer'>

@@ -9,39 +9,126 @@ export const Resize = () => {
 	const [dataValue, setDataValue] = useState('');
 	const [created, setCreated] = useState(null); // Created Date
 	// IMAGE
-	const [image, setImage] = useState(null);
 	const [imageName, setImageName] = useState(null); // Image name
+	const [imageFile, setImageFile] = useState(null);
 	const [maxValue, setMaxValue] = useState(1920); // max width or height px
+	const [imageQuality, setImageQuality] = useState(1); // Image quality 0.8 to 1
 	const [widthValue, setWidthValue] = useState(1024);
 	const [heightValue, setHeightValue] = useState(768);
 	const [oldWidthValue, setOldWidthValue] = useState(1024);
 	const [oldheightValue, setOldHeightValue] = useState(768);
 	const [imageSize, setImageSize] = useState(1); // Image size KB
 	const [OldImageSize, setOldImageSize] = useState(1); // Image size KB
+	// Filters
+	const [brightness, setBrightness] = useState(1); // Image brightness 0-2
+	const [contrast, setContrast] = useState(1); // Image contrast 0-2
+	const [saturate, setSaturate] = useState(1); // Image saturate 0-2
+
+	const filtersReset = () => {
+		setBrightness(1);
+		setContrast(1);
+		setSaturate(1);
+		let limit = maxValue;
+		let quality = imageQuality;
+		let bright = 1;
+		let contra = 1;
+		let satu = 1;
+
+		if (imageFile) {
+			let file = imageFile;
+			preview_image(file, limit, quality, bright, contra, satu);
+		}
+	};
+
+	const handleBrightness = (e) => {
+		setBrightness(e.target.value);
+		let limit = maxValue;
+		let quality = imageQuality;
+		let bright = e.target.value;
+		let contra = contrast;
+		let satu = saturate;
+
+		if (imageFile) {
+			let file = imageFile;
+			preview_image(file, limit, quality, bright, contra, satu);
+		}
+	};
+
+	const handleContrast = (e) => {
+		setContrast(e.target.value);
+		let limit = maxValue;
+		let quality = imageQuality;
+		let bright = brightness;
+		let contra = e.target.value;
+		let satu = saturate;
+
+		if (imageFile) {
+			let file = imageFile;
+			preview_image(file, limit, quality, bright, contra, satu);
+		}
+	};
+
+	const handleSaturate = (e) => {
+		setSaturate(e.target.value);
+		let limit = maxValue;
+		let quality = imageQuality;
+		let bright = brightness;
+		let contra = contrast;
+		let satu = e.target.value;
+
+		if (imageFile) {
+			let file = imageFile;
+			preview_image(file, limit, quality, bright, contra, satu);
+		}
+	};
 
 	const handleMaxValue = (e) => {
 		setMaxValue(e.target.value);
 		let limit = e.target.value;
+		let quality = imageQuality;
+		let bright = brightness;
+		let contra = contrast;
+		let satu = saturate;
 
-		if (image) {
-			let file = image;
-			preview_image(file, limit);
+		if (imageFile) {
+			let file = imageFile;
+			preview_image(file, limit, quality, bright, contra, satu);
+		}
+	};
+	const handleQuality = (e) => {
+		setImageQuality(e.target.value);
+		let limit = maxValue;
+		let quality = e.target.value;
+		let bright = brightness;
+		let contra = contrast;
+		let satu = saturate;
+
+		if (imageFile) {
+			let file = imageFile;
+			preview_image(file, limit, quality, bright, contra, satu);
 		}
 	};
 
 	const handleImageResize = (e) => {
 		// Get image from input
 		const file = document.getElementById('file');
-		setImage(file);
+		setImageFile(file);
 		// Process Image
 		let limit = maxValue;
+		let quality = imageQuality;
+		// Filters Reset
+		filtersReset();
 
-		preview_image(file, limit);
+		preview_image(file, limit, quality);
 	};
 
 	const reduce_image_file_size = async (
 		base64Str,
 		limit,
+		quality,
+		bright,
+		contra,
+		satu,
 		MAX_WIDTH = limit,
 		MAX_HEIGHT = limit
 	) => {
@@ -73,9 +160,24 @@ export const Resize = () => {
 				canvas.width = width;
 				canvas.height = height;
 				let ctx = canvas.getContext('2d');
+				// Filters
+				ctx.filter = `brightness(${bright}) contrast(${contra}) saturate(${satu})`;
+
+				// Draw canvas image
 				ctx.drawImage(img, 0, 0, width, height);
+
 				//get the base64-encoded Data URI from the resize image
-				resolve(ctx.canvas.toDataURL('image/jpeg', 0.9));
+				if (quality == 0.95) {
+					resolve(ctx.canvas.toDataURL('image/jpeg', 0.95));
+				} else if (quality == 0.9) {
+					resolve(ctx.canvas.toDataURL('image/jpeg', 0.9));
+				} else if (quality == 0.85) {
+					resolve(ctx.canvas.toDataURL('image/jpeg', 0.85));
+				} else if (quality == 0.8) {
+					resolve(ctx.canvas.toDataURL('image/jpeg', 0.8));
+				} else {
+					resolve(ctx.canvas.toDataURL('image/jpeg', 1));
+				}
 			};
 		});
 		return resized_base64;
@@ -101,7 +203,7 @@ export const Resize = () => {
 		return result_base64;
 	};
 
-	const preview_image = async (file, limit) => {
+	const preview_image = async (file, limit, quality, bright, contra, satu) => {
 		const reset = '';
 		setPreviewIMG(reset);
 
@@ -116,7 +218,14 @@ export const Resize = () => {
 			// console.log('Old size => ', olds, 'KB');
 
 			// Resize image
-			const resized = await reduce_image_file_size(res, limit);
+			const resized = await reduce_image_file_size(
+				res,
+				limit,
+				quality,
+				bright,
+				contra,
+				satu
+			);
 			const news = calc_image_size(resized);
 			setImageSize(news);
 			// console.log('New size => ', news, 'KB');
@@ -151,6 +260,9 @@ export const Resize = () => {
 
 	return (
 		<div className='container'>
+			<label htmlFor='file' className='image-btn'>
+				Select Image
+			</label>
 			<input
 				id='file'
 				accept='.jpg, .png, .jpeg'
@@ -161,8 +273,56 @@ export const Resize = () => {
 			<br />
 			<div className='hidden' id='hidden'>
 				<img src='' id='new' alt='rezised' />
+				<br />
+				<br />
+				<div className='filters'>
+					<div>
+						<label htmlFor='brightness'>Brightness</label>
+						<input
+							type='range'
+							min='0'
+							max='2'
+							step='0.01'
+							value={brightness}
+							name='brightness'
+							id='brightness'
+							className='slider'
+							onChange={handleBrightness}
+						/>
+					</div>
+					<div>
+						<label htmlFor='contrast'>Contrast</label>
+						<input
+							type='range'
+							min='0'
+							max='2'
+							step='0.01'
+							value={contrast}
+							name='contrast'
+							id='contrast'
+							className='slider'
+							onChange={handleContrast}
+						/>
+					</div>
+					<div>
+						<label htmlFor='saturate'>Saturate</label>
+						<input
+							type='range'
+							min='0'
+							max='2'
+							step='0.01'
+							value={saturate}
+							name='saturate'
+							id='saturate'
+							className='slider'
+							onChange={handleSaturate}
+						/>
+					</div>
+					<button onClick={filtersReset}>Reset</button>
+				</div>
+				<br />
+				<br />
 				<div className='custome-select'>
-					<br />
 					<label className='select'>SELECT max side: </label>
 					<select onChange={handleMaxValue}>
 						<option value='1920'>1920px</option>
@@ -177,6 +337,17 @@ export const Resize = () => {
 					</select>
 				</div>
 				<br />
+				<div className='custome-select'>
+					<label className='select'>SELECT image quality: </label>
+					<select onChange={handleQuality}>
+						<option value='1'>100%</option>
+						<option value='0.95'>95%</option>
+						<option value='0.9'>90%</option>
+						<option value='0.85'>85%</option>
+						<option value='0.8'>80%</option>
+					</select>
+				</div>
+
 				<p>{imageName}</p>
 				<div className='data-container'>
 					<pre className='exif-data'>
@@ -186,16 +357,21 @@ export const Resize = () => {
 
 								{dataValue.Lens && <p>Lens: {dataValue.Lens}</p>}
 
+								<p>ISO:{dataValue.ISO}</p>
+								<p>f:{dataValue.FNumber}</p>
 								<p>
-									ISO:{dataValue.ISO} f:{dataValue.FNumber} S:1/
-									{Math.trunc(1 / dataValue.ExposureTime)} Focal:
-									{dataValue.FocalLength}mm{' '}
+									S:1/
+									{Math.trunc(1 / dataValue.ExposureTime)}
+								</p>
+								<p>
+									Focal:
+									{dataValue.FocalLength}mm
 								</p>
 								{dataValue.subject && <p>Subject: {dataValue.subject}</p>}
 
 								{dataValue.Copyright && <p>Copyright: {dataValue.Copyright}</p>}
 
-								<p>Created: {created}</p>
+								{created !== 'Invalid Date' && <p>Created: {created}</p>}
 
 								{/* <p>{JSON.stringify(dataValue, null, '\t')}</p> */}
 							</>
@@ -209,7 +385,9 @@ export const Resize = () => {
 				</p>
 				<p>
 					Resized: {widthValue}px x {heightValue}px _
-					<b>{imageSize.toFixed(0)}</b>KB
+					<b>
+						{imageSize.toFixed(0)}KB _ {imageQuality * 100}%
+					</b>
 				</p>
 				<br />
 				{imageName && (

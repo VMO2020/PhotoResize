@@ -1,22 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,700;1,300&display=swap');
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --color: DodgerBlue;
+  --border: grey;
+}
+
 .App {
+  position: relative;
   font-family: 'Roboto', sans-serif;
   text-align: center;
   font-size: 20px;
-  min-height: 100vh;
+  min-height: calc(100vh - 8em);
   margin: auto;
+  scroll-behavior: smooth;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.photo-container{
+  margin: auto;
 }
 
 h1{
@@ -28,11 +34,45 @@ h1{
   margin-bottom: 1.2em;
 }
 
-input{
+#file{
   font-size: 20px;
   width: 400px;
   margin: auto;
-  /* border: 2px solid black; */
+  visibility: hidden;
+}
+
+.image-btn{
+  display: block;
+  font-size: 22px;
+  width: 400px;
+  max-width: 80%;
+  margin: auto;
+  text-align: center;
+  color: white;
+  background-color:var(--color);
+  border: 2px solid var(--border);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.5s ease;
+}
+
+.image-btn:hover {
+  font-size: 24px;
+}
+
+#file::-webkit-file-upload-button {
+  width: 15ch;
+  margin-right: 1em;
+  color:white;
+  background-color:var(--color);
+  border: 2px solid var(--border);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.5s ease;
+}
+
+#file:hover{
+  margin-left: 0.5em;
 }
 
 h2{
@@ -41,27 +81,41 @@ h2{
   max-width: 100%;
   margin: auto;
   margin-bottom: 0.5em;
-  margin-top: 0.5em;
-  border: 2px solid black;
+  margin-top: 0.2em;
+  color:white;
+  background-color:var(--color);
+  border: 2px solid var(--color);
 }
 
 .select{
-  color: blue;
-  font-size: 22px;
+  color: DodgerBlue;
+  font-size: 20px;
   font-weight: bold;
   border: none;
-  padding: 0 1em 0 0;
+  /* padding: 0 1em 0 0; */
   margin: 0;
+  transition-delay: 2s;
 }
 
 select{
-  font-size: 22px;
-  min-width: 10ch;
-  max-width: 15ch;
+  font-size: 20px;
+  width: 12ch;
+  padding-left: 0.5em;
+  color: white;
+  background-color: var(--color);
+  border: 2px solid var(--border);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.5s ease;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);;
+}
+
+select:hover{
+  width: 13ch;
 }
 
  p{
-  font-size: 18px;
+  font-size: 16px;
  }
 
 img{
@@ -75,25 +129,28 @@ img{
 
 a{
   text-decoration: none;
+  letter-spacing: 1px;
   padding-top: 0.3em;
   padding-bottom: 0.3em;
   padding-left: 1em;
   padding-right: 1em;
-  background-color: blue;
   color: white;
-  border: 2px solid grey;
+  background-color: var(--color);
+  border: 2px solid var(--border);
   border-radius: 5px;
+  transition: all 0.5s ease;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
 }
 
 a:hover{
-  padding-left: 2em;
-  padding-right: 2em;
+  font-size: 22px;
 }
 
 .exif-data{
   width: 400px;
   max-width: 100%;
   margin: auto;
+  padding: 0.5em;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -101,16 +158,39 @@ a:hover{
 }
 
 .exif-data p{
-  font-size: 14px;
-  margin: 1em;
+  font-size: 12px;
+  margin: 0.5em 1em;
 }
 
+.filters{
+  width: 400px;
+  max-width: 100%;
+  margin: auto;
+  padding: 0.5em;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid grey;
+}
+
+.slider{
+  width: 100%;
+}
+
+button{
+  margin-top: 1em;
+  width: 50%;
+}
 footer {
+  position:absolute;
+  left: 50%;
+  bottom: -7em;
+  transform: translateX(-50%);
   font-weight: 300;
   text-align: center;
   padding: 0.3em 0;
   margin: auto;
-  margin-bottom: 2px;
   margin-top: 20px;
   width: 400px;
   max-width: 100%;
@@ -122,10 +202,12 @@ footer a{
   color: black;
   padding-bottom: 0.1em;
   background-color:white;
+  transition: all 0.5s ease;
+  box-shadow: none;
 }
 
 footer a:hover{
-  color: blue;
+  color: var(--color);
   font-weight: bold;
 }
 
@@ -133,9 +215,25 @@ footer a:hover{
   h2, h1{
     width: 800px;
    }
-  img, input, .exif-data{
+   p{
+    font-size:18px;
+   }
+  img, input, .exif-data, .filters{
     width: 800px;
     max-width: 100%;
+  }
+  button{
+    margin-top: 0;
+    width: auto;
+  }
+  select, .select{
+    font-size: 22px;
+  }
+  .exif-data p{
+    font-size: 16px;
+  }
+  .slider{
+    width: 50%;
   }
   footer {
     width: 800px;
