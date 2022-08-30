@@ -22,6 +22,8 @@
 }
 
 .photo-container{
+  width: 400px;
+  max-width: 100%;
   margin: auto;
 }
 
@@ -87,12 +89,24 @@ h2{
   border: 2px solid var(--color);
 }
 
+.selectors, .result{
+  display: flex;
+  flex-wrap: wrap;
+  margin: auto;
+  width: 100%;
+  justify-content: center;
+  gap: 1em;
+}
+
+.result p{
+  margin: 0;
+}
+
 .select{
   color: DodgerBlue;
   font-size: 20px;
   font-weight: bold;
   border: none;
-  /* padding: 0 1em 0 0; */
   margin: 0;
   transition-delay: 2s;
 }
@@ -119,8 +133,7 @@ select:hover{
  }
 
 img{
-  width: 400px;
-  max-width: 100%;
+  width: 100%;
 }
 
 .hidden {
@@ -147,8 +160,7 @@ a:hover{
 }
 
 .exif-data{
-  width: 400px;
-  max-width: 100%;
+  width: 100%;
   margin: auto;
   padding: 0.5em;
   display: flex;
@@ -163,25 +175,43 @@ a:hover{
 }
 
 .filters{
-  width: 400px;
-  max-width: 100%;
+  font-size: 16px;
+  width: 100%;
   margin: auto;
-  padding: 0.5em;
+  padding: 1em;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   border: 2px solid grey;
+  gap: 1em;
 }
 
-.slider{
-  width: 100%;
+.slider, button{
+  width: 300px;
+  max-width: 90%;
+  margin: 0.2em;
+  vertical-align: middle;
+  cursor: pointer;
 }
 
 button{
-  margin-top: 1em;
-  width: 50%;
+  font-size: 14px;
+  letter-spacing: 1px;
+  padding: 0.2em 0;
+  color: red;
+  background-color:transparent;
+  border: 1px solid red;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.5s ease;
 }
+
+button:hover{
+  font-size: 16px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+}
+
 footer {
   position:absolute;
   left: 50%;
@@ -212,31 +242,50 @@ footer a:hover{
 }
 
 @media only screen and (min-width: 600px) {
-  h2, h1{
+  h1, h2, input, footer, .photo-container{
+    width: 700px;
+    max-width: 100vw;
+  }
+
+  .selectors, .result{
+    gap: 0.5em;
+  }
+
+  select, .select{
+    font-size: 18px;
+  }
+
+  .filters{
+    padding: 0.5em;
+  }
+
+  button, .slider{
+    width: 100px;
+  }
+}
+
+@media only screen and (min-width: 800px) {
+  h1, h2, input, footer, .photo-container{
     width: 800px;
-   }
-   p{
+    max-width: 100vw;
+  }
+
+  p{
     font-size:18px;
-   }
-  img, input, .exif-data, .filters{
-    width: 800px;
-    max-width: 100%;
   }
-  button{
-    margin-top: 0;
-    width: auto;
-  }
+ 
   select, .select{
     font-size: 22px;
   }
   .exif-data p{
     font-size: 16px;
   }
-  .slider{
-    width: 50%;
+  button, .slider{
+    width: 120px;
   }
-  footer {
-    width: 800px;
-    max-width: 100%;
+
+  .result{
+    gap: 2em;
   }
+  
 }

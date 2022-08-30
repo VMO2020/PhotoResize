@@ -321,31 +321,32 @@ export const Resize = () => {
 					<button onClick={filtersReset}>Reset</button>
 				</div>
 				<br />
-				<br />
-				<div className='custome-select'>
-					<label className='select'>SELECT max side: </label>
-					<select onChange={handleMaxValue}>
-						<option value='1920'>1920px</option>
-						<option value='1530'>1530px</option>
-						<option value='1440'>1440px</option>
-						<option value='1280'>1280px</option>
-						<option value='1080'>1080px</option>
-						<option value='900'>900px</option>
-						<option value='720'>720px</option>
-						<option value='630'>630px</option>
-						<option value='400'>400px</option>
-					</select>
-				</div>
-				<br />
-				<div className='custome-select'>
-					<label className='select'>SELECT image quality: </label>
-					<select onChange={handleQuality}>
-						<option value='1'>100%</option>
-						<option value='0.95'>95%</option>
-						<option value='0.9'>90%</option>
-						<option value='0.85'>85%</option>
-						<option value='0.8'>80%</option>
-					</select>
+				<div className='selectors'>
+					<div className='custome-select'>
+						<label className='select'>SELECT max side: </label>
+						<select onChange={handleMaxValue}>
+							<option value='1920'>1920px</option>
+							<option value='1530'>1530px</option>
+							<option value='1440'>1440px</option>
+							<option value='1280'>1280px</option>
+							<option value='1080'>1080px</option>
+							<option value='900'>900px</option>
+							<option value='720'>720px</option>
+							<option value='630'>630px</option>
+							<option value='400'>400px</option>
+						</select>
+					</div>
+					<br />
+					<div className='custome-select'>
+						<label className='select'>SELECT image quality: </label>
+						<select onChange={handleQuality}>
+							<option value='1'>100%</option>
+							<option value='0.95'>95%</option>
+							<option value='0.9'>90%</option>
+							<option value='0.85'>85%</option>
+							<option value='0.8'>80%</option>
+						</select>
+					</div>
 				</div>
 
 				<p>{imageName}</p>
@@ -378,17 +379,19 @@ export const Resize = () => {
 						)}
 					</pre>
 				</div>
+				<br />
+				<div className='result'>
+					<p>
+						Original: {oldWidthValue.toFixed(0)}px x {oldheightValue.toFixed(0)}
+						px _ <b>{OldImageSize.toFixed(0)}</b>KB
+					</p>
+					<p>
+						Resized: {widthValue}px x {heightValue}px _
+						<b>{imageSize.toFixed(0)}</b>KB _ {imageQuality * 100}%
+					</p>
+				</div>
 
-				<p>
-					Original: {oldWidthValue.toFixed(0)}px x {oldheightValue.toFixed(0)}px
-					_ <b>{OldImageSize.toFixed(0)}</b>KB
-				</p>
-				<p>
-					Resized: {widthValue}px x {heightValue}px _
-					<b>
-						{imageSize.toFixed(0)}KB _ {imageQuality * 100}%
-					</b>
-				</p>
+				<br />
 				<br />
 				{imageName && (
 					<a
